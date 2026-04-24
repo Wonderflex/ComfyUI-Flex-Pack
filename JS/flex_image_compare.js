@@ -36,6 +36,7 @@ app.registerExtension({
                 let panX = 0, panY = 0;
                 let sliderPos = 0.5;
                 let thumbSize = 100;
+                let autoFit = true; // Tracks if the image should scale with the node
 
                 const imageUrls = imageList.map(img => 
                     api.apiURL(`/view?filename=${encodeURIComponent(img.filename)}&type=${img.type}&subfolder=${img.subfolder}`)
@@ -106,20 +107,40 @@ app.registerExtension({
                     });
                 };
 
+                // Thumbnail Size Controls
                 const sliderContainer = document.createElement("div");
-                sliderContainer.style.cssText = "display:flex; justify-content:center; padding:0 8px 8px 8px;";
+                sliderContainer.style.cssText = "display:flex; justify-content:center; align-items:center; padding:0 8px 8px 8px;";
+                
                 const sizeSlider = document.createElement("input");
-                sizeSlider.type = "range"; sizeSlider.min = "60"; sizeSlider.max = "250"; sizeSlider.value = thumbSize;
+                sizeSlider.type = "range"; sizeSlider.min = "60"; sizeSlider.max = "800"; sizeSlider.value = thumbSize;
                 sizeSlider.style.width = "150px";
                 sizeSlider.style.accentColor = "#3574f0";
-                sizeSlider.oninput = (e) => { thumbSize = e.target.value; renderFilmstrip(); };
+
+                const updateThumbSize = (val) => {
+                    thumbSize = Math.max(60, Math.min(800, val));
+                    sizeSlider.value = thumbSize;
+                    renderFilmstrip();
+                };
+
+                sizeSlider.oninput = (e) => updateThumbSize(e.target.value);
+                
+                // Wheel support for filmstrip (Horizontal Scroll + Ctrl/Zoom)
+                filmstrip.onwheel = (e) => {
+                    if (e.ctrlKey) {
+                        e.preventDefault();
+                        updateThumbSize(Number(thumbSize) + (e.deltaY > 0 ? -15 : 15));
+                    } else if (e.deltaY !== 0) {
+                        e.preventDefault();
+                        filmstrip.scrollLeft += e.deltaY;
+                    }
+                };
                 
                 sliderContainer.appendChild(sizeSlider);
                 topSection.appendChild(filmstrip);
                 topSection.appendChild(sliderContainer);
                 container.appendChild(topSection);
 
-                // CANVAS WRAPPER (To prevent flexbox clipping the footer)
+                // CANVAS WRAPPER
                 const canvasWrapper = document.createElement("div");
                 canvasWrapper.style.cssText = "flex:1; display:flex; overflow:hidden; position:relative; min-height:200px;";
                 
@@ -132,11 +153,12 @@ app.registerExtension({
                 const imgA = new Image(); const imgB = new Image();
 
                 const resetView = () => {
-                    if (!imgA.naturalWidth) return;
+                    if (!imgA.naturalWidth || canvas.width === 0) return;
                     const scaleX = canvas.width / imgA.naturalWidth;
                     const scaleY = canvas.height / imgA.naturalHeight;
                     zoom = Math.min(scaleX, scaleY) * 0.98;
                     panX = 0; panY = 0;
+                    autoFit = true; // Lock image sizing to node resizing
                     draw();
                 };
 
@@ -161,37 +183,29 @@ app.registerExtension({
                         drawLayer(imgB); 
                         ctx.globalCompositeOperation = "source-over";
                     } else {
-                        // Draw B as the full background
                         drawLayer(imgB);
-                        
-                        // Clip A to the top (if vertical) or left (if horizontal)
                         const clip = isVertical ? { x:0, y:0, w:canvas.width, h:canvas.height * sliderPos } : { x:0, y:0, w:canvas.width * sliderPos, h:canvas.height };
                         drawLayer(imgA, clip);
 
-                        // Slider Line
                         ctx.strokeStyle = "rgba(128,128,128,0.8)"; ctx.lineWidth = 1; ctx.beginPath();
                         if (isVertical) { ctx.moveTo(0, canvas.height * sliderPos); ctx.lineTo(canvas.width, canvas.height * sliderPos); }
                         else { ctx.moveTo(canvas.width * sliderPos, 0); ctx.lineTo(canvas.width * sliderPos, canvas.height); }
                         ctx.stroke();
 
-                        // A/B Labels 
                         ctx.font = "bold 20px Arial"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
                         ctx.lineWidth = 3; ctx.strokeStyle = "black"; ctx.fillStyle = "white";
                         const labelA = String.fromCharCode(65 + imgAIndex); const labelB = String.fromCharCode(65 + imgBIndex);
                         
-                        const padX = 25;
-                        const padY = 20;
+                        const padX = 25; const padY = 20;
 
                         if (isVertical) {
                             const lineY = canvas.height * sliderPos;
                             const safeX = canvas.width - padX - 10;
-                            // A on top, B on bottom
                             ctx.strokeText(labelA, safeX, lineY - padY); ctx.fillText(labelA, safeX, lineY - padY);
                             ctx.strokeText(labelB, safeX, lineY + padY); ctx.fillText(labelB, safeX, lineY + padY);
                         } else {
                             const lineX = canvas.width * sliderPos; 
                             const safeY = canvas.height - padY - 10;
-                            // A on left, B on right
                             ctx.strokeText(labelA, lineX - padX, safeY); ctx.fillText(labelA, lineX - padX, safeY);
                             ctx.strokeText(labelB, lineX + padX, safeY); ctx.fillText(labelB, lineX + padX, safeY);
                         }
@@ -201,8 +215,9 @@ app.registerExtension({
                 let isPanning = false;
 
                 canvas.onmousemove = (e) => {
-                    if (isPanning) { panX += e.movementX; panY += e.movementY; } 
-                    else if (!isDifference) {
+                    if (isPanning) { 
+                        panX += e.movementX; panY += e.movementY; 
+                    } else if (!isDifference) {
                         const rect = canvas.getBoundingClientRect();
                         if (rect.width > 0 && rect.height > 0) {
                             sliderPos = isVertical ? (e.clientY - rect.top) / rect.height : (e.clientX - rect.left) / rect.width;
@@ -212,24 +227,36 @@ app.registerExtension({
                 };
 
                 canvas.onmouseleave = () => { if (!isDifference && !isPanning) { sliderPos = 0.5; draw(); } };
-                canvas.onwheel = (e) => { e.preventDefault(); zoom = Math.min(Math.max(zoom * (e.deltaY > 0 ? 0.9 : 1.1), 0.05), 20); draw(); };
-                canvas.onmousedown = (e) => { if(e.button === 0) isPanning = true; };
+                
+                canvas.onwheel = (e) => { 
+                    e.preventDefault(); 
+                    autoFit = false; // User zoomed manually, break the auto-fit behavior
+                    zoom = Math.min(Math.max(zoom * (e.deltaY > 0 ? 0.9 : 1.1), 0.05), 20); 
+                    draw(); 
+                };
+                
+                canvas.onmousedown = (e) => { 
+                    if(e.button === 0) {
+                        isPanning = true; 
+                        autoFit = false; // User panned manually, break the auto-fit behavior
+                    }
+                };
                 window.addEventListener("mouseup", () => isPanning = false);
 
                 const updateImages = () => {
                     imgA.src = imageUrls[imgAIndex]; imgB.src = imageUrls[imgBIndex];
-                    imgA.onload = () => { if (zoom === 1.0) resetView(); else draw(); };
+                    imgA.onload = () => { if (autoFit) resetView(); else draw(); };
                     imgB.onload = draw;
                 };
 
-                // ResizeObserver strictly handles canvas rendering, skipping 0x0 errors
                 const ro = new ResizeObserver((entries) => {
                     for (let entry of entries) {
                         const { width, height } = entry.contentRect;
                         if (width > 0 && height > 0) {
                             canvas.width = width;
                             canvas.height = height;
-                            if (zoom === 1.0 && imgA.naturalWidth) resetView(); else draw();
+                            // If autoFit is true, auto-scale the image. If false, retain user's custom zoom.
+                            if (autoFit && imgA.naturalWidth) resetView(); else draw();
                         }
                     }
                 });
@@ -265,9 +292,7 @@ app.registerExtension({
                 renderFilmstrip();
                 updateImages();
 
-                // FIXED: Passing hideOnZoom strictly prevents ComfyUI from breaking the widget display
                 this.addDOMWidget("flex_ui_root", "ui", container, { serialize: false, hideOnZoom: false });
-                
                 setTimeout(() => self.setSize([Math.max(self.size[0], 600), Math.max(self.size[1], 700)]), 50);
             };
         }
