@@ -16,6 +16,14 @@ This node allows you to select a LoRA and set a display name, a min and max valu
 - The ability to output the LoRA keywords to concatenate into prompts.
 - Randomization button for all LoRAs or individual LoRAs.
 
+<details>
+  <summary>Sample Images</summary>
+  
+  ![LoRA Slider](https://raw.githubusercontent.com/Wonderflex/ComfyUI-Flex-Pack/refs/heads/main/sample_images/LoRASlider1.png)
+  ![LoRA Slider](https://raw.githubusercontent.com/Wonderflex/ComfyUI-Flex-Pack/refs/heads/main/sample_images/LoRASlider2.png)
+
+</details>  
+
 ---
 
 ## **Flex XY Grid Engine**
@@ -31,6 +39,14 @@ This node is designed to provide a streamlined XY comparison grid experience wit
 - Adjust the final gride scale. Useful for very large grids.
 - Output a single grid image, or each individual image from the grid.
 
+<details>
+  <summary>Sample Images</summary>
+  
+  ![XY Grid Engine](https://raw.githubusercontent.com/Wonderflex/ComfyUI-Flex-Pack/refs/heads/main/sample_images/XYGridEngine.png)
+  ![XY Grid Output](https://raw.githubusercontent.com/Wonderflex/ComfyUI-Flex-Pack/refs/heads/main/sample_images/XYGridOutput.png)
+  
+</details>  
+
 ---
 
 ## **Flex Image Compare**
@@ -44,4 +60,12 @@ An advanced image comparison node that allows the user to compare multiple image
 - The toggle diff allows you to see the image difference. Helpful when needing to make sure images are truly identical.
 - Ability save individual images in the filmstrip or to save all images.
 
----
+<details>
+  <summary>Sample Images</summary>
+  
+  ![Image Compare](https://raw.githubusercontent.com/Wonderflex/ComfyUI-Flex-Pack/refs/heads/main/sample_images/ImageCompare1.png)
+  ![Image Compare](https://raw.githubusercontent.com/Wonderflex/ComfyUI-Flex-Pack/refs/heads/main/sample_images/ImageCompare2.png)
+  ![Image Compare](https://raw.githubusercontent.com/Wonderflex/ComfyUI-Flex-Pack/refs/heads/main/sample_images/ImageCompare3.png)
+  ![Image Compare](https://raw.githubusercontent.com/Wonderflex/ComfyUI-Flex-Pack/refs/heads/main/sample_images/ImageCompare4.png)
+  
+</details>
