@@ -69,3 +69,12 @@ This node allows you to select a LoRA and set a display name, a min and max valu
   ![LoRA Slider](https://raw.githubusercontent.com/Wonderflex/ComfyUI-Flex-Pack/refs/heads/main/sample_images/LoRASlider2.png)
 
 </details>  
+
+---
+
+## **Install Process**
+1. Close ComfyUI if you have it open
+2. Open command prompt
+3. CD to your custom nodes folder within ComfyUI (likely .\ComfyUI_windows_portable\ComfyUI\custom_nodes)
+4. git pull this repo
+5. Enjoy?
