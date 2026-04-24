@@ -7,6 +7,8 @@ import comfy.samplers
 import hashlib
 import json
 import re
+import csv
+import io
 
 class FlexXYGridEngine:
     last_run_hash = None
@@ -63,23 +65,31 @@ class FlexXYGridEngine:
     def parse_values(self, val_str, axis_type):
             if axis_type == "None": return ["None"]
             
-            # Split by comma and clean whitespace
-            raw_vals = [v.strip() for v in val_str.split(",") if v.strip()]
+            # Use csv to split by commas safely, respecting quotation marks
+            reader = csv.reader(io.StringIO(val_str), skipinitialspace=True)
+            try:
+                raw_vals = list(reader)[0]
+            except IndexError:
+                raw_vals = []
+                
             parsed = []
             
             for val in raw_vals:
+                val = val.strip()
+                
+                # Keep blank entries ONLY if we are doing Prompt S/R
+                if not val and axis_type != "Prompt S/R":
+                    continue
+                    
                 # Check for range pattern: start-end (+increment) or start-end (increment)
-                # Example: 1-5 (+2) or 1.0-2.0 (0.5)
                 range_match = re.match(r"([\d\.]+)-([\d\.]+)(?:\s*[\(\+]+([\d\.]+)[\)]+)?", val)
                 
                 if range_match and axis_type in ["Steps", "CFG", "LoRA Strength"]:
                     start = float(range_match.group(1))
                     end = float(range_match.group(2))
-                    # Default increment to 1.0 if not specified
                     step = float(range_match.group(3)) if range_match.group(3) else 1.0
                     
                     curr = start
-                    # Use a small epsilon for float comparison to avoid precision issues
                     while curr <= end + (step * 0.01):
                         if axis_type == "Steps":
                             parsed.append(int(curr))

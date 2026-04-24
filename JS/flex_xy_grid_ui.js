@@ -82,7 +82,13 @@ app.registerExtension({
                         toggleWidgetVisibility("clip_type", isUNET);
                         toggleWidgetVisibility("vae_name", isUNET);
                         
-                        this.setSize(this.computeSize());
+                        // Calculate minimum size needed for visible widgets
+                        const minSize = this.computeSize();
+                        
+                        // Only expand if necessary; never shrink below the user's set/saved size
+                        this.size[0] = Math.max(this.size[0], minSize[0]);
+                        this.size[1] = Math.max(this.size[1], minSize[1]);
+                        
                         app.graph.setDirtyCanvas(true, true);
                     };
 

@@ -10,7 +10,13 @@ All notable changes to this project will be documented in this file.
   - **FEATURE:** Scroll wheel now moves filmstrip left/right  
   - **FEATURE:** Ctrl+wheel zooms filmstrip  
   - **STYLE:** Filmstrip max size increased by 8×  
-  - **FIX:** Comparison window now resizes with node  
+  - **FIX:** Comparison window now resizes with node
+
+  **Xy Grid Engine Node**
+  - **FEATURE:** Search and replace can now use blank values.
+  - **FEATURE:** Search and replace can now use values with a commas by surrounding the values in quotation marks.
+  - **STYLE:** Node is now wider to allow more breathing room for fields. 
+  - **FIX:** Node was resizing to minimum upon page load, refresh, and model type toggle.  The node now maintains the correct size.   
 
 </details>
 
