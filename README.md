@@ -76,5 +76,5 @@ This node allows you to select a LoRA and set a display name, a min and max valu
 1. Close ComfyUI if you have it open
 2. Open command prompt
 3. CD to your custom nodes folder within ComfyUI (likely .\ComfyUI_windows_portable\ComfyUI\custom_nodes)
-4. git pull this repo
+4. git clone this repo
 5. Enjoy?
