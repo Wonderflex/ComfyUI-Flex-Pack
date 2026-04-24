@@ -5,27 +5,6 @@ Here are the nodes in my pack and some information on how to use them:
 
 ---
 
-## **Flex LoRA Slider**
-This node allows you to select a LoRA and set a display name, a min and max values with labels, keywords, and a note. These are then saved for easy use in future.
-
-### **Features**
-- Using a display name allows you to save your LoRA files using whatever poorly devised naming convention was used by the author, yet still recognize it in the loader.  
-- A slider method presented that ranges from -100 to +100 and will set a strength relative to your min and max values. For example, if a LoRA has a strength range of -2 to +4 and a setting of 50 is selected, it will use an output of strength of +2.0. Similarly, a value of -50 will output a strength of -1.0. This allows you to set your ranges one time and then forget. This means that no matter the strength, 50% should be half way to the max value. Additionally, values can be reversed to make the slider go in the opposite direction - useful for those times where you have two LoRAs that have the same effect but are inverted in how they are applied.
-- Positive and negative values can be custom labeled, which is very useful when dealing with slider LoRAS. Clicking labels will increase or decrease the value by 5.
-- The ability so save a stack of LoRAs as a single preset.
-- The ability to output the LoRA keywords to concatenate into prompts.
-- Randomization button for all LoRAs or individual LoRAs.
-
-<details>
-  <summary>Sample Images</summary>
-  
-  ![LoRA Slider](https://raw.githubusercontent.com/Wonderflex/ComfyUI-Flex-Pack/refs/heads/main/sample_images/LoRASlider1.png)
-  ![LoRA Slider](https://raw.githubusercontent.com/Wonderflex/ComfyUI-Flex-Pack/refs/heads/main/sample_images/LoRASlider2.png)
-
-</details>  
-
----
-
 ## **Flex XY Grid Engine**
 This node is designed to provide a streamlined XY comparison grid experience without the need for any extra widgets, using batches, or complex incremental counters.
 
@@ -69,3 +48,24 @@ An advanced image comparison node that allows the user to compare multiple image
   ![Image Compare](https://raw.githubusercontent.com/Wonderflex/ComfyUI-Flex-Pack/refs/heads/main/sample_images/ImageCompare4.png)
   
 </details>
+
+---
+
+## **Flex LoRA Slider**
+This node allows you to select a LoRA and set a display name, a min and max values with labels, keywords, and a note. These are then saved for easy use in future.
+
+### **Features**
+- Using a display name allows you to save your LoRA files using whatever poorly devised naming convention was used by the author, yet still recognize it in the loader.  
+- A slider method presented that ranges from -100 to +100 and will set a strength relative to your min and max values. For example, if a LoRA has a strength range of -2 to +4 and a setting of 50 is selected, it will use an output of strength of +2.0. Similarly, a value of -50 will output a strength of -1.0. This allows you to set your ranges one time and then forget. This means that no matter the strength, 50% should be half way to the max value. Additionally, values can be reversed to make the slider go in the opposite direction - useful for those times where you have two LoRAs that have the same effect but are inverted in how they are applied.
+- Positive and negative values can be custom labeled, which is very useful when dealing with slider LoRAS. Clicking labels will increase or decrease the value by 5.
+- The ability so save a stack of LoRAs as a single preset.
+- The ability to output the LoRA keywords to concatenate into prompts.
+- Randomization button for all LoRAs or individual LoRAs.
+
+<details>
+  <summary>Sample Images</summary>
+  
+  ![LoRA Slider](https://raw.githubusercontent.com/Wonderflex/ComfyUI-Flex-Pack/refs/heads/main/sample_images/LoRASlider1.png)
+  ![LoRA Slider](https://raw.githubusercontent.com/Wonderflex/ComfyUI-Flex-Pack/refs/heads/main/sample_images/LoRASlider2.png)
+
+</details>  
