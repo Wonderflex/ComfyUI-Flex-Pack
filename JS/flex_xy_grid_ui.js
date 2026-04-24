@@ -6,7 +6,6 @@ app.registerExtension({
     name: "ComfyUI.FlexPack.XYGridUI.v3", // Bumped cache-buster
     async beforeRegisterNodeDef(nodeType, nodeData, app) {
         
-        // ---> THIS WAS THE MISMATCH. IT NOW MATCHES YOUR PYTHON DICTIONARY KEY <---
         if (nodeData.name === "FlexXYGridEngine") { 
             
             const onNodeCreated = nodeType.prototype.onNodeCreated;
